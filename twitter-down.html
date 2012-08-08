@@ -1,0 +1,65 @@
+
+n::DecodeError: 710: unexpected token at '<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="Content-Language" content="en-us">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Twitter / <%= reason.capitalize %></title>
+    <link href="//si0.twimg.com/sticky/error_pages/favicon.ico" rel="shortcut icon" type="image/x-icon">
+    <link rel="stylesheet" href="/errors/fullscreen_errors.css">
+  </head>
+  <body>
+    <div class="topbar js-topbar">
+      <div class="global-nav" data-section-term="top_nav">
+        <div class="global-nav-inner">
+          <div class="container">
+            <ul class="nav js-global-actions">
+              <li class="home">
+                <a href="//twitter.com">
+                  <span><i class="nav-home-logged-out"></i></span>
+                </a>
+              </li>
+            </ul>
+            <div class="pull-right">
+              <ul class="nav secondary-nav">
+                <li><a href="//twitter.com" id="homeLink">Back home &rarr;</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="blue-sky">
+      <div class="body-content">
+        <div class="canvas">
+          <img class="illustration moan-cone" src="/errors/moan_cone.png">
+        </div>
+        <h1>Twitter is currently down for <%= reason %>.</h1>
+        <p>We expect to be back in <%= deadline %>. For more information, check out <a href="http://status.twitter.com">Twitter Status</a>. Thanks for your patience!</p>
+        <div class="footer">
+          <ul class="links">
+            <li class="first">&copy; 2012 Twitter</li>
+            <li><a href="/about">About</a></li>
+            <li><a href="/help">Help</a></li>
+          <li><a href="http://status.twitter.com/">Status</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- BEGIN google analytics -->
+    <script type="text/javascript">
+      var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+      document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+    </script>
+    <script type="text/javascript">
+      var pageTracker = _gat._getTracker("UA-30775-6");
+      pageTracker._setDomainName("twitter.com");
+      pageTracker._trackPageview('Maintenance');
+    </script>
+    <!-- END google analytics -->
+  </body>
+</html>
+
