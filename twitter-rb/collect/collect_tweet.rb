@@ -2,6 +2,8 @@
 require 'twitter'
 require 'mongo'
 
+start_time = Time.now
+
 #set twitter oauth
 Twitter.configure do |config|
   config.consumer_key = "qr7DUTlTG0yL35mtUHz7g"
@@ -23,35 +25,44 @@ end
 
 #conncet to db:{twitter} , collection:{user} and {tweet}
 db = connection.db("twitter")
-user_collection = db.collection("user")
-tweet_collection = db.collection("tweet")
+user_collection = db.collection("user_filter3")
+tweet_collection = db.collection("tweet_uf3_8_20")
+logfile = File.open("collect_tweet_#{start_time}.log",'w+') #output file
 
 #check the number of user in db
 total_count = user_collection.count
-
+logfile.write("process start at #{start_time}\n")
 puts "fetch all user data......"
 all_user = user_collection.find.to_a
 puts "fetch all user data......sucessfully"
 
+
+error_user = []
 all_user.each do |user|
-	puts "user name = #{user['screen_name']}, user status count = #{user['statuses_count']}"
-	if user['statuses_count'] == 0
-		puts "the user #{user['screen_name']} have no tweet"
-	else
-		if user['statuses_count'] < 3200
-			page_count = user['statuses_count']/200
-			puts "start to fetch #{user['screen_name']} 's tweets..."
-			(1..page_count+1).each do |page|
-				begin
-				    timeline = Twitter.user_timeline(screen_name, :count => 200, :page => page)	    	
-				    puts Twitter.rate_limit_status.remaining_hits.to_s + " Twitter API request(s) remaining this hour"
-         rescue Twitter::Error => e
-				  	puts "[find follower_ids] " + e.to_s
-				  	sleep(5)
-				  	retry
-				end
-			end
-		end
-	end
-	puts Twitter.user_timeline(en_user[u]['screen_name']).first.text
+  puts "Start to fetch #{user['name']} 's tweets..."
+  begin
+    puts Twitter.rate_limit_status.remaining_hits.to_s + " Twitter API request(s) remaining this hour"
+    user_tweet = Twitter.user_timeline(user['id'], :count => 300, :page => 1).to_a  
+  rescue => e
+    puts "exception: #{e.to_s}"
+    if e.to_s == "Not authorized" or e.to_s == "Name or service not known"
+      error_user.push(user['id'])
+      puts "continue to the next......"         
+      next
+    elsif e.to_s == "Rate limit exceeded. Clients may not make more than 350 requests per hour."
+      puts "take a break ......"
+      sleep(5)
+    end
+    retry
+  end
+  
+  puts "user:#{user['screen_name']}  => tweet_count:#{user_tweet.count}"
+  user_tweet.each do |t|
+    tweet_collection.insert(t.attrs) 
+    puts "Insert:#{t['text']}"
+  end
 end
+
+logfile.write("Collect Process Duration: #{Time.now - start_time} seconds\n")
+logfile.write("error user:#{error_user}\n")
+logfile.close
