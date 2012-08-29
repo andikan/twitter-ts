@@ -17,15 +17,17 @@ tweet_collection = db['tweet_822']
 date_tweet_collection = db['date_tweet_count']
 time_tweet = dict()
 
-for i in range(0, 118):
-    all_tweet = tweet_collection.find().skip(i*10000).limit(9999)
+for i in range(0, 119):
+    all_tweet = tweet_collection.find().skip(i*10000).limit(10000)
+    offset = 0
     for tweet in all_tweet:
-        print "index:"+str(i)+" => id:"+str(tweet['id'])
+        print "index:"+str(i*10000+offset)+" => id:"+str(tweet['id'])
         create_time = parse(tweet['created_at'])
         if str(create_time.date()) in time_tweet:
             time_tweet[str(create_time.date())] += 1
         else:
             time_tweet[str(create_time.date())] = 1
+        offset += 1
 
 start_time = sorted(time_tweet.iterkeys())  #sort time_tweet key
 print "collect tweet start at : " + str(start_time[0])
